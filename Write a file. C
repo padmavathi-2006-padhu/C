@@ -1,0 +1,14 @@
+#include <stdio.h>
+
+int main() {
+    FILE *fp;
+    char text[100];
+
+    fp = fopen("file.txt", "w");   // open file in write mode
+
+    if (fp == NULL) {
+        printf("File cannot be opened!");
+        return 1;
+    }
+
+    printf("Enter text to write into file:\n");
