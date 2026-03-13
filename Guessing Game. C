@@ -1,0 +1,21 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+int main() {
+    int num, guess;
+
+    srand(time(0));           // generate random number
+    num = rand() % 10 + 1;    // random number between 1 and 10
+
+    printf("Guess the number (1 to 10): ");
+    scanf("%d", &guess);
+
+    if(guess == num) {
+        printf("Correct\n");
+    } else {
+        printf("Wrong, number was %d\n", num);
+    }
+
+    return 0;
+}
