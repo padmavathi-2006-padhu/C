@@ -1,0 +1,22 @@
+#include <stdio.h>
+
+struct Student {
+    char name;
+    int marks;
+};
+
+int main() {
+    struct Student students[3] = {
+        {'A', 85},
+        {'B', 90},
+        {'C', 78}
+    };
+
+    int i;
+
+    for(i = 0; i < 3; i++) {
+        printf("%c %d\n", students[i].name, students[i].marks);
+    }
+
+    return 0;
+}
