@@ -1,0 +1,45 @@
+#include <stdio.h>
+#include <sqlite3.h>
+
+// Callback function to print output
+int callback(void *NotUsed, int argc, char **argv, char **azColName){
+    for(int i = 0; i < argc; i++){
+        printf("%s = %s\t", azColName[i], argv[i] ? argv[i] : "NULL");
+    }
+    printf("\n");
+    return 0;
+}
+
+int main(){
+    sqlite3 *db;
+    char *errMsg = 0;
+
+    // Open database
+    int rc = sqlite3_open("student.db", &db);
+
+    if(rc){
+        printf("Can't open database\n");
+        return 0;
+    }
+
+    // Create table
+    char *create_sql = "CREATE TABLE IF NOT EXISTS Student("
+                       "roll INT, name TEXT, marks INT, dept TEXT);";
+
+    sqlite3_exec(db, create_sql, callback, 0, &errMsg);
+
+    // Insert data
+    sqlite3_exec(db, "INSERT INTO Student VALUES(1,'Ravi',85,'CSE');", callback, 0, &errMsg);
+    sqlite3_exec(db, "INSERT INTO Student VALUES(2,'Sita',90,'ECE');", callback, 0, &errMsg);
+    sqlite3_exec(db, "INSERT INTO Student VALUES(3,'Ram',70,'CSE');", callback, 0, &errMsg);
+    sqlite3_exec(db, "INSERT INTO Student VALUES(4,'John',95,'ECE');", callback, 0, &errMsg);
+
+    // Select data
+    printf("Student Table Data:\n");
+    sqlite3_exec(db, "SELECT * FROM Student;", callback, 0, &errMsg);
+
+    // Close database
+    sqlite3_close(db);
+
+    return 0;
+}
