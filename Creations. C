@@ -1,0 +1,64 @@
+#include <stdio.h>
+#include <sqlite3.h>
+
+static int callback(void *NotUsed, int argc, char **argv, char **azColName){
+    for(int i = 0; i < argc; i++){
+        printf("%s = %s\t", azColName[i], argv[i] ? argv[i] : "NULL");
+    }
+    printf("\n");
+    return 0;
+}
+
+int main(){
+    sqlite3 *db;
+    char *errMsg = 0;
+
+    // Open database
+    sqlite3_open("student.db", &db);
+
+    // Create table
+    sqlite3_exec(db,
+        "CREATE TABLE IF NOT EXISTS Student("
+        "RollNo INT, Name TEXT, Marks INT);",
+        callback, 0, &errMsg);
+
+    // Insert data
+    sqlite3_exec(db,
+        "INSERT INTO Student VALUES(1,'Ravi',85);",
+        callback, 0, &errMsg);
+
+    sqlite3_exec(db,
+        "INSERT INTO Student VALUES(2,'Sita',90);",
+        callback, 0, &errMsg);
+
+    // Display before update
+    printf("Before Alter:\n");
+    sqlite3_exec(db,
+        "SELECT * FROM Student;",
+        callback, 0, &errMsg);
+
+    // Alter table
+    sqlite3_exec(db,
+        "ALTER TABLE Student ADD COLUMN Grade TEXT;",
+        callback, 0, &errMsg);
+
+    // Update values
+    sqlite3_exec(db,
+        "UPDATE Student SET Grade='A' WHERE Marks>=90;",
+        callback, 0, &errMsg);
+
+    sqlite3_exec(db,
+        "UPDATE Student SET Grade='B' WHERE Marks<90;",
+        callback, 0, &errMsg);
+
+    // Display after update
+    printf("\nAfter Update:\n");
+    sqlite3_exec(db,
+        "SELECT * FROM Student;",
+        callback, 0, &errMsg);
+
+    // Close database
+    sqlite3_close(db);
+
+    return 0;
+}
