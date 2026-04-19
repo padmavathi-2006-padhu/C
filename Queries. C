@@ -1,0 +1,52 @@
+#include <stdio.h>
+#include <sqlite3.h>
+
+// Callback function to print results
+int callback(void *data, int argc, char **argv, char **colName) {
+    for (int i = 0; i < argc; i++) {
+        printf("%s ", argv[i] ? argv[i] : "NULL");
+    }
+    printf("\n");
+    return 0;
+}
+
+int main() {
+    sqlite3 *db;
+    char *errMsg = 0;
+
+    // Open database
+    sqlite3_open("student.db", &db);
+
+    printf("\n--- IN Operator ---\n");
+    sqlite3_exec(db,
+        "SELECT name FROM Student WHERE dept IN ('CSE','ECE');",
+        callback, 0, &errMsg);
+
+    printf("\n--- ANY Operator ---\n");
+    sqlite3_exec(db,
+        "SELECT name FROM Student WHERE marks > ANY "
+        "(SELECT marks FROM Student WHERE dept='CSE');",
+        callback, 0, &errMsg);
+
+    printf("\n--- ALL Operator ---\n");
+    sqlite3_exec(db,
+        "SELECT name FROM Student WHERE marks > ALL "
+        "(SELECT marks FROM Student WHERE dept='CSE');",
+        callback, 0, &errMsg);
+
+    printf("\n--- EXISTS Operator ---\n");
+    sqlite3_exec(db,
+        "SELECT name FROM Student WHERE EXISTS "
+        "(SELECT * FROM Student WHERE marks > 80);",
+        callback, 0, &errMsg);
+
+    printf("\n--- UNION Operator ---\n");
+    sqlite3_exec(db,
+        "SELECT name FROM Student UNION SELECT name FROM Student;",
+        callback, 0, &errMsg);
+
+    // Close database
+    sqlite3_close(db);
+
+    return 0;
+}
