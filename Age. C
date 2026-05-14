@@ -1,0 +1,21 @@
+#include <stdio.h>
+
+int main() {
+    char name[50];
+    int age;
+
+    printf("Enter name: ");
+    scanf("%s", name);
+
+    printf("Enter age: ");
+    scanf("%d", &age);
+
+    if(age >= 18) {
+        printf("%s major", name);
+    }
+    else {
+        printf("%s minor", name);
+    }
+
+    return 0;
+}
